@@ -1,0 +1,17 @@
+{
+  "name": "TADHack2014",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "tropo": "*"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "tropo": {
+    "uuid": "44ecb29c-d230-46ea-b0d4-82decab794e0"
+  }
+}
