@@ -13,7 +13,7 @@ tropo.on('subscribe', function (event) {
 
       if (active_calls.length >= limit) {
         console.log('Disconnecting longest-running call');
-        longest_call = active_calls.last();
+        longest_call = active_calls.shift();
         // TODO Find the caller's peer and copy this notification
         longest_call.say("This call will now be disconnected.");
         longest_call.hangup();
