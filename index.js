@@ -16,7 +16,7 @@ tropo.on('subscribe', function (event) {
         longest_call = active_calls.shift();
         // TODO Find the caller's peer and copy this notification
         longest_call.say("This call will now be disconnected.");
-        longest_call.hangup();
+        longest_call.disconnect();
       }
     });
     
