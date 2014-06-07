@@ -17,22 +17,23 @@ tropo.on('subscribe', function (event) {
 
       active_calls.push(event.call);
 
-      call.connections[0].on('disconnected', function() {
-        console.log('Call is hung up, removing from list of active calls');
-        var index = active_calls.indexOf(call);
-        active_calls.splice(index, 1);
-      });
-
       if (active_calls.length > limit) {
         console.log('Length = ' + active_calls.length);
         console.log('Disconnecting longest-running call ' + util.inspect(active_calls));
         longest_call = active_calls[0];
-        // TODO Find the caller's peer and copy this notification
-        longest_call.say("This call will now be disconnected.").on('end', function() {
+
+        if(longest_call.connected) {
+          longest_call.say("Sorry dude. Your call is being disconnected.").on('end', function() {
+            longest_call.disconnect();
+            call.connect(connectAddress);
+          });
+          call.autoConnect = false;
+        }
+        else {
           longest_call.disconnect();
           call.connect(connectAddress);
-        });
-        call.autoConnect = false;
+        }
+
       }
       else {
           call.connect(connectAddress);
@@ -42,10 +43,17 @@ tropo.on('subscribe', function (event) {
     
     subscriber.on('call:connected', function(event) {
         var call = event.call;
+        call.connected = true;
         setTimeout(function() {
     	    console.log('Notifying caller that call has exceeded guaranteed length');
-          call.say("Due to network usage, this call may be disconnected automatically.")
+          call.say("Due to high network usage, this call may be disconnected automatically.")
         }, timeout);
     });
 
+    subscriber.on('call:end', function(event) {
+      console.log('Call is hung up, removing from list of active calls');
+      var call = event.call;
+      var index = active_calls.indexOf(call);
+      active_calls.splice(index, 1);
+    });
 });
